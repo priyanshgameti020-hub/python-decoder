@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Secret Hacker Encoder</title>
+
+<style>
+
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: "Courier New", monospace;
+    }
+
+    body{
+    background:black;
+    color:#00ff9c;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    }
+
+    .container{
+    background:#0a0a0a;
+    border:1px solid #00ff9c;
+    padding:35px;
+    width:420px;
+    border-radius:8px;
+    box-shadow:0 0 15px #00ff9c;
+    text-align:center;
+    }
+
+    h1{
+    margin-bottom:20px;
+    font-size:22px;
+    letter-spacing:2px;
+    }
+
+    input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    background:black;
+    border:1px solid #00ff9c;
+    color:#00ff9c;
+    border-radius:4px;
+    font-size:14px;
+    }
+
+    input::placeholder{
+    color:#00cc7a;
+    }
+
+    button{
+    padding:10px 20px;
+    margin:10px 5px;
+    background:black;
+    border:1px solid #00ff9c;
+    color:#00ff9c;
+    cursor:pointer;
+    transition:0.3s;
+    }
+
+    button:hover{
+    background:#00ff9c;
+    color:black;
+    }
+
+    #result{
+    margin-top:15px;
+    padding:10px;
+    border:1px dashed #00ff9c;
+    min-height:30px;
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 id="title"></h1>
+<h3>NEW VERSION</h3>
+
+<input id="message" placeholder="Enter message">
+<button onclick="encode()">Encode</button>
+
+<br><br>
+
+<input id="code" placeholder="Enter secret code">
+<input id="key" placeholder="Enter key">
+<button onclick="decode()">Decode</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+
+// typing effect
+const text = ">> SECRET HACKER ENCODER";
+let i = 0;
+
+function typeEffect(){
+if(i < text.length){
+document.getElementById("title").innerHTML += text.charAt(i);
+i++;
+setTimeout(typeEffect,80);
+}
+}
+
+typeEffect();
+
+async function encode(){
+let msg=document.getElementById("message").value;
+
+let res=await fetch("/encode",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+});
+
+let data=await res.json();
+
+document.getElementById("result").innerHTML=
+"> Encoded: "+data.code+" | Key: "+data.key;
+}
+
+async function decode(){
+let code=document.getElementById("code").value;
+let key=document.getElementById("key").value;
+
+let res=await fetch("/decode",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({code:code,key:key})
+});
+
+let data=await res.json();
+
+document.getElementById("result").innerHTML=
+"> Decoded: "+data.message;
+}
+
+</script>
+
+</body>
+</html>
